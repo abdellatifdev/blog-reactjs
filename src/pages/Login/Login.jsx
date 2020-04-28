@@ -19,11 +19,10 @@ const LoginPage = props => {
     const handleSubmit = async event =>{
         event.preventDefault();
         try{
-            await Auth.authenticate(credentials)
+            await Auth.authenticate(credentials);
             setError("");
-
         }catch(error){
-            setError("Tets");
+            setError("invalid authentication !");
         }
     }
 
@@ -32,11 +31,10 @@ const LoginPage = props => {
             <h2>Login</h2>
             <form>
                 <div className="form-group">
-                    <label>Email address</label>
-                    <input type="email" className="form-control" onChange={handleChange}
+                    <label>Username</label>
+                    <input type="text" className={"form-control" + (error && " is-invalid")} onChange={handleChange}
                     value={credentials.username} id="username" name="username"/>
-                    {error && <small id="emailHelp" className="form-text text-muted">
-                        {error}</small>
+                    {error && <div className="invalid-feedback">{error}</div>
                 }
                 </div>
                 <div className="form-group">

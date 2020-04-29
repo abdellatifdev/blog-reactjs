@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './Login.module.css';
 import Auth from '../../api/Auth';
-const LoginPage = ({onLogin}) => {
+import AuthContext from '../../contexts/AuthContext';
+const LoginPage = ({history}) => {
 
+    const {setIsAuthenticated} = useContext(AuthContext);
+    
     const [credentials,setCredentials] = useState({
         username: "",
         password: ""
@@ -20,7 +23,8 @@ const LoginPage = ({onLogin}) => {
         try{
             await Auth.authenticate(credentials);
             setError("");
-            onLogin(true);
+            setIsAuthenticated(true);
+            history.replace('/posts');
         }catch(error){
             setError("invalid authentication !");
         }

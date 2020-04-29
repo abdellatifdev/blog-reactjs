@@ -1,20 +1,28 @@
-import React from "react";
+import React ,{useContext} from "react";
 import "./NavBar.module.css";
 import { NavLink } from "react-router-dom";
 import Auth from "../../api/Auth";
-const NavBar = ({ isAuthenticated, onLogout }) => {
+import AuthContext from "../../contexts/AuthContext";
+
+const NavBar = ({history }) => {
+  
+  const {isAuthenticated,setIsAuthenticated} = useContext(AuthContext);
+
   const handleLogout = () => {
     Auth.logout();
-    onLogout(false);
+    setIsAuthenticated(false);
+    history.push('/');
   };
 
   return (
     <header className="blog-header py-3">
       <div className="row flex-nowrap justify-content-between align-items-center">
         <div className="col-4 pt-1">
-          <a className="text-muted" href="#">
-            Subscribe
-          </a>
+          {(isAuthenticated && (
+            <NavLink className="text-muted" to="/posts">
+              My posts
+          </NavLink>
+          ))}
         </div>
         <div className="col-4 text-center">
           <NavLink className="blog-header-logo text-dark" to="/">
@@ -52,7 +60,7 @@ const NavBar = ({ isAuthenticated, onLogout }) => {
                 className="btn btn-sm btn-outline-secondary"
                 to="/register"
               >
-                Sign in
+                Sign up
               </NavLink>
             </React.Fragment>
           )) || (

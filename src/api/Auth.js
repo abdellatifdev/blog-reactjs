@@ -13,26 +13,39 @@ function authenticate(credentials){
 }
 
 function setToken(token){
-    axios.response.headers["Authorization"] = "Bearer: "+ token;
+    axios.defaults.headers["Authorization"] = "Bearer: "+ token;
 }
 
 function logout(){
     window.localStorage.removeItem("authToken");
-    delete axios.response.headers["Authorization"];
+    delete axios.defaults.headers["Authorization"];
 }
 
 function setup(){
     const token = window.localStorage.getItem("authToken");
     if(token){
         const {exp: expiration} = jwtDecode(token);
-        if (expiration * 1000 > new Date().getTime) {
+        if (expiration * 1000 > new Date().getTime()) {
             setToken(token);
         }
     }
 }
 
+function isAuthenticated(){
+    const token = window.localStorage.getItem("authToken");
+    if(token){
+        const {exp: expiration} = jwtDecode(token);
+        if (expiration * 1000 > new Date().getTime()) {
+            return true;
+        }
+        return false;
+    }
+    return false;
+}
+
 export default {
     authenticate,
     logout,
-    setup
+    setup,
+    isAuthenticated
 }

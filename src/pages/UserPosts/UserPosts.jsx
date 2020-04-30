@@ -1,7 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./UserPosts.module.css";
+import PostsApi from '../../api/UserPosts';
 
-const UserPosts = () => {
+const UserPosts = props => {
+
+  const [posts,setPosts] = useState([]);
+
+  const fetchPosts = async () => {
+    try{
+        const data = await PostsApi.getPosts();
+        setPosts(data);
+    }catch(error){
+
+    }   
+  }
+
+  useEffect (() => {
+      fetchPosts()
+  },[])
   return (
     <div className="posts-list">
       <h2>My posts list</h2>
@@ -15,9 +31,14 @@ const UserPosts = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            
-          </tr>
+            {posts.map(post => (
+              <tr>
+                  <td>{post.title}</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

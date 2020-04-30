@@ -32,8 +32,8 @@ const UserPosts = props => {
         </thead>
         <tbody>
             {posts.map(post => (
-              <tr>
-                  <td>{post.title}</td>
+              <tr key={post.id}>
+                  <td>{post.id}</td>
                   <td></td>
                   <td></td>
                   <td></td>

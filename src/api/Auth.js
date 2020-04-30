@@ -13,7 +13,7 @@ function authenticate(credentials){
 }
 
 function setToken(token){
-    axios.defaults.headers["Authorization"] = "Bearer: "+ token;
+        axios.defaults.headers["Authorization"] = "Bearer " + token;
 }
 
 function logout(){

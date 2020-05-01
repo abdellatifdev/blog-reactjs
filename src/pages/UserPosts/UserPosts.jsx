@@ -6,7 +6,10 @@ import Pagination from "../../components/pagination";
 const UserPosts = (props) => {
   const [posts, setPosts] = useState([]);
   const [currentPage,setCurrentPage] = useState(1);
-  const [search,setSearch] = useState("");
+  const [search,setSearch] = useState({
+    title:"",
+    status:""
+  });
   const fetchPosts = async () => {
     try {
       const data = await PostsApi.getPosts();
@@ -24,12 +27,15 @@ const UserPosts = (props) => {
   }
 
   const handleSearch = ({currentTarget}) => {
-    setSearch(currentTarget.value);
+    const {name,value} = currentTarget
+    setSearch({...search,[name]: value})
     handlePageChange(1);
   }
 
   const filteredItems = posts.filter(
-    post => post.title.toLowerCase().includes(search.toLowerCase())
+     post => post.title.toLowerCase().includes(search.title.toLowerCase())
+     
+            // post.isPulished == search.status
   )
 
   
@@ -40,9 +46,11 @@ const UserPosts = (props) => {
       <h2>My posts list</h2>
       <div className="search">
             <input type="text" placeholder="Search by title" 
-                    className="form-control" value={search} onChange={handleSearch}/>
-            <select name="" id=""  className="form-control" onChange={() => console.log('hhh')}>
-                  <option value="">test</option><option value="">test</option>
+                    className="form-control" name="title" value={search.title} onChange={handleSearch}/>
+            <select className="form-control" name="status" value={search.isPulished} onChange={handleSearch}>
+                  <option>Is pulished</option>
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
             </select>
       </div>
       <table className="table table-hover">

@@ -5,7 +5,8 @@ import Pagination from "../../components/pagination";
 
 const UserPosts = (props) => {
   const [posts, setPosts] = useState([]);
-  const [currentPage,setCurrentPage] = useState(1)
+  const [currentPage,setCurrentPage] = useState(1);
+  const [search,setSearch] = useState("");
   const fetchPosts = async () => {
     try {
       const data = await PostsApi.getPosts();
@@ -17,16 +18,33 @@ const UserPosts = (props) => {
     fetchPosts();
   }, []);
 
-  const itemsPerPage = 6;
+  const itemsPerPage = 10;
   const handlePageChange = (page) => {
     setCurrentPage(page)
   }
 
-  const paginatedItems = Pagination.getData(currentPage,posts,itemsPerPage);
+  const handleSearch = ({currentTarget}) => {
+    setSearch(currentTarget.value);
+    handlePageChange(1);
+  }
 
+  const filteredItems = posts.filter(
+    post => post.title.toLowerCase().includes(search.toLowerCase())
+  )
+
+  
+
+  const paginatedItems = Pagination.getData(currentPage,filteredItems,itemsPerPage);
   return (
     <div className="posts-list">
       <h2>My posts list</h2>
+      <div className="search">
+            <input type="text" placeholder="Search by title" 
+                    className="form-control" value={search} onChange={handleSearch}/>
+            <select name="" id=""  className="form-control" onChange={() => console.log('hhh')}>
+                  <option value="">test</option><option value="">test</option>
+            </select>
+      </div>
       <table className="table table-hover">
         <thead>
           <tr>
@@ -54,10 +72,11 @@ const UserPosts = (props) => {
           ))}
         </tbody>
       </table>
-      {itemsPerPage < paginatedItems && (
-           <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} length={posts.length}
+      {itemsPerPage < filteredItems.length && 
+           <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} length={filteredItems.length}
            onPageChange={handlePageChange} />
-      )}
+      }
+    
      
     </div>
   );

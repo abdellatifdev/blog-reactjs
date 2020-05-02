@@ -9,6 +9,7 @@ import AuthContext from './contexts/AuthContext';
 import HomePage from './pages/HomePage/HomePage';
 import LoginPage from './pages/Login/Login';
 import UserPosts from './pages/UserPosts/UserPosts';
+import UserPost from './pages/UserPosts/UserPost';
 
 Auth.setup();
 
@@ -26,6 +27,7 @@ const App = () => {
             <NavBarWithRouter />
             <Switch>
               <Route path="/login" component={LoginPage}/>
+              <PrivateRoute path="/posts/:id" component={UserPost} />
               <PrivateRoute path="/posts" component={UserPosts} />
               <Route path="/" component={HomePage} />
             </Switch>

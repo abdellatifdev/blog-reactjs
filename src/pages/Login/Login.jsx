@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import './Login.module.css';
 import Auth from '../../api/Auth';
 import AuthContext from '../../contexts/AuthContext';
+import Field from '../../components/form/Field';
 const LoginPage = ({history}) => {
 
     const {setIsAuthenticated} = useContext(AuthContext);
@@ -34,17 +35,12 @@ const LoginPage = ({history}) => {
         <div className="login-form">
             <h2>Login</h2>
             <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label>Username</label>
-                    <input type="text" className={"form-control" + (error && " is-invalid")} onChange={handleChange}
-                    value={credentials.username} id="username" name="username"/>
-                    {error && <div className="invalid-feedback">{error}</div>}
-                </div>
-                <div className="form-group">
-                    <label>Password</label>
-                    <input type="password" className="form-control" onChange={handleChange}
-                    value={credentials.password} name="password" id="password"/>
-                </div>
+                <Field label="Username" value={credentials.username} name="username" 
+                       onChange={handleChange} error={error}/>
+
+                <Field type="password" label="Password" value={credentials.password} name="password" 
+                       onChange={handleChange}/>
+                
                 <button type="submit" className="btn btn-primary">Submit</button>
             </form>
         </div>

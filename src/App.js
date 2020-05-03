@@ -11,6 +11,7 @@ import HomePage from './pages/HomePage/HomePage';
 import LoginPage from './pages/Login/Login';
 import UserPosts from './pages/UserPosts/UserPosts';
 import UserPost from './pages/UserPosts/UserPost';
+import PageNotFound from './pages/NotFound/PageNotFound';
 
 Auth.setup();
 
@@ -27,10 +28,11 @@ const App = () => {
           <div className="container">
             <NavBarWithRouter />
             <Switch>
-              <Route path="/login" component={LoginPage}/>
-              <PrivateRoute path="/posts/:id" component={UserPost} />
-              <PrivateRoute path="/posts" component={UserPosts} />
-              <Route path="/" component={HomePage} />
+              <Route exact path="/" component={HomePage} />
+              <Route exact path="/login" component={LoginPage}/>
+              <PrivateRoute exact path="/posts/:id" component={UserPost} />
+              <PrivateRoute exact path="/posts" component={UserPosts} />
+              <Route component={PageNotFound} />
             </Switch>
           </div>
         </div>

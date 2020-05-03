@@ -43,7 +43,6 @@ const UserPosts = ({ history }) => {
     setPosts(posts.filter((post) => post.id != id));
     try {
       await PostsApi.deletePost(id);
-      history.replace('/')
     } catch (error) {
       setPosts(originalPosts);
       console.log(error);

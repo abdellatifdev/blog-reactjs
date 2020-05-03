@@ -4,3 +4,9 @@
 .search {
     padding: 20px 0 30px;
 }
+.table .fa{
+    color: #fff;
+}
+.table button.btn-danger{
+    margin-left: 10px;
+}

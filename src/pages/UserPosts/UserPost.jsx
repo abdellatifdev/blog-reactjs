@@ -1,34 +1,80 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Field from "../../components/form/Field";
-import UserPosts from "../../api/UserPosts";
+import ApiPost from "../../api/UserPosts";
+import {handleDelete} from "./UserPosts"
 
-const UserPost = (props) => {
+const UserPost = ({ history, match }) => {
+  const { id = "new" } = match.params;
+
   const [post, setPost] = useState({
     title: "",
-    content:"",
-    isPublished:false,
-    slug : "test-test"
+    content: "",
+    isPulished: false,
+    slug: "",
+  });
+  const [error, setError] = useState({
+    title: "",
+    content: "",
+    slug: "",
   });
 
-  const handleChange = ({ currentTarget }) => {
-    const { name, value } = currentTarget;
-    setPost({ ...post, [name]: value });
+  const [editing, setEditing] = useState(false);
+
+  const fetchPost = async (id) => {
+    try {
+      const data = await ApiPost.find(id);
+      const { title, content, isPulished, slug } = data;
+      setPost({ title, content, isPulished, slug });
+    } catch (error) {
+      console.log(error.response);
+    }
   };
 
-  const handleSubmit = async (event) =>{
-      event.preventDefault(); 
-      console.log(post)
-      try{
-           await UserPosts.newPost(post); 
-      }catch(error){
-           console.log(error.response) 
+  useEffect(() => {
+    if (id !== "new") {
+      setEditing(true);
+      fetchPost(id);
+    }
+  }, [id]);
+
+  const handleChange = ({ currentTarget }) => {
+    const { name, value, checked } = currentTarget;
+    setPost({ ...post, [name]: (name !== "isPulished" && value) || checked });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      if (!editing) {
+        await ApiPost.newPost(post);
+      } else {
+        await ApiPost.edit(id, post);
       }
-  }
+
+      history.replace("/posts");
+    } catch ({ response }) {
+      const { violations } = response.data;
+      if (violations) {
+        const apiErrors = {};
+        violations.map(({ propertyPath, message }) => {
+          apiErrors[propertyPath] = message;
+        });
+        setError(apiErrors);
+      }
+    }
+  };
 
   return (
     <div className="posts-list">
       <div className="mb-3 d-flex justify-content-between align-items-center">
-        <h2>Create new post</h2>
+        {(!editing && <h2>Create new post</h2>) || (
+          <React.Fragment>
+            <h2>Editing {post.title}</h2>
+            {/* <button className="btn btn-primary" onClick={() => handleDelete(post.id)}>
+              Delete post
+            </button> */}
+          </React.Fragment>
+        )}
       </div>
       <form onSubmit={handleSubmit}>
         <Field
@@ -39,33 +85,47 @@ const UserPost = (props) => {
           name="title"
           value={post.title}
           onChange={handleChange}
+          error={error.title}
         />
         <div className="form-group">
           <label>Body</label>
           <textarea
             name="content"
             rows="5"
-            className="form-control"
+            className={"form-control " + (error.content && "is-invalid")}
             value={post.content}
             placeholder="Body"
             onChange={handleChange}
           ></textarea>
-          <div className="form-check">
-            <input
-              type="checkbox"
-              className="form-check-input"
-              id="isPublished"
-              name="isPublished"
-              onChange={handleChange}
-            />
-            <label className="form-check-label" htmlFor="isPublished">
-              Published
-            </label>
-          </div>
-          <button type="submit" className="btn btn-success">
-            Submit
-          </button>
+          {error.content && (
+            <div className="invalid-feedback">{error.content}</div>
+          )}
         </div>
+        <Field
+          label="Slug"
+          type="text"
+          placeholder="Slug"
+          className="form-control"
+          name="slug"
+          value={post.slug}
+          onChange={handleChange}
+          error={error.slug}
+        />
+        <div className="form-check">
+          <input
+            type="checkbox"
+            className="form-check-input"
+            name="isPulished"
+            onChange={handleChange}
+            checked={post.isPulished}
+          />
+          <label className="form-check-label" htmlFor="isPublished">
+            Published
+          </label>
+        </div>
+        <button type="submit" className="btn btn-success">
+          Submit
+        </button>
       </form>
     </div>
   );

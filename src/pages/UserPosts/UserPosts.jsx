@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
-import "./UserPosts.module.css";
-import PostsApi from "../../api/UserPosts";
-import Pagination from "../../components/pagination";
-import Field from "../../components/form/Field";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import PostsApi from "../../api/UserPosts";
+import Field from "../../components/form/Field";
+import Pagination from "../../components/pagination";
+import "./UserPosts.module.css";
+import TableLoader from "../../components/Loader/TableLoader";
 
-const UserPosts = (props) => {
+const UserPosts = ({ history }) => {
+  const [loading,setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState({
@@ -14,8 +16,9 @@ const UserPosts = (props) => {
   });
   const fetchPosts = async () => {
     try {
-      const data = await PostsApi.getPosts();
+      const data = await PostsApi.findAll();
       setPosts(data);
+      setLoading(false);
     } catch (error) {}
   };
 
@@ -33,6 +36,18 @@ const UserPosts = (props) => {
     setSearch({ ...search, [name]: value });
     //   console.log({...search})
     handlePageChange(1);
+  };
+
+  const handleDelete = async (id) => {
+    const originalPosts = [posts];
+    setPosts(posts.filter((post) => post.id != id));
+    try {
+      await PostsApi.deletePost(id);
+      history.replace('/')
+    } catch (error) {
+      setPosts(originalPosts);
+      console.log(error);
+    }
   };
 
   const filteredItems = posts.filter(
@@ -53,16 +68,16 @@ const UserPosts = (props) => {
           New post
         </Link>
       </div>
-      
-        <Field
-          type="text"
-          placeholder="Search by title"
-          className="form-control"
-          name="title"
-          value={search.title}
-          onChange={handleSearch}
-        />
-        {/* <input
+
+      <Field
+        type="text"
+        placeholder="Search by title"
+        className="form-control"
+        name="title"
+        value={search.title}
+        onChange={handleSearch}
+      />
+      {/* <input
           type="text"
           placeholder="Search by title"
           className="form-control"
@@ -70,22 +85,24 @@ const UserPosts = (props) => {
           value={search.title}
           onChange={handleSearch}
         /> */}
-        {/* <select className="form-control" name="status" value={search.isPulished} onChange={handleSearch}>
+      {/* <select className="form-control" name="status" value={search.isPulished} onChange={handleSearch}>
                   <option value='p'>Is pulished</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
             </select> */}
-      
+
       <table className="table table-hover">
         <thead>
           <tr>
             <th scope="col">Title</th>
             {/* <th scope="col">Created At</th>
             <th scope="col">Updated At</th> */}
-            <th scope="col">Pulished</th>
+            <th scope="col">Published</th>
+            <th scope="col">Action</th>
           </tr>
         </thead>
-        <tbody>
+        {!loading && (
+          <tbody>
           {paginatedItems.map((post) => (
             <tr key={post.id}>
               <td>{post.title}</td>
@@ -99,9 +116,27 @@ const UserPosts = (props) => {
                   <span className="badge badge-pill badge-success">Yes</span>
                 )) || <span className="badge badge-pill badge-danger">No</span>}
               </td>
+              <td>
+                <Link
+                  to={"/posts/" + post.id}
+                  className="btn btn-warning btn-sm"
+                >
+                  <i className="fa fa-edit"></i>
+                </Link>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() =>
+                    window.confirm("test") && handleDelete(post.id)
+                  }
+                >
+                  <i className="fa fa-trash"></i>
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
+        )}
+        {loading && <TableLoader />}
       </table>
       {itemsPerPage < filteredItems.length && (
         <Pagination

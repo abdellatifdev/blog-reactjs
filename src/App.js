@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'font-awesome/css/font-awesome.min.css';
 import React, { useState } from 'react';
 import { BrowserRouter, Route, Switch, withRouter } from 'react-router-dom';
 import Auth from './api/Auth';

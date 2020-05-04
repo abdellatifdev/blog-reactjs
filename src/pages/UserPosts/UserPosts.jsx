@@ -16,7 +16,7 @@ const UserPosts = ({ history }) => {
   });
   const fetchPosts = async () => {
     try {
-      const data = await PostsApi.findAll();
+      const data = await PostsApi.findUserPost();
       setPosts(data);
       setLoading(false);
     } catch (error) {}

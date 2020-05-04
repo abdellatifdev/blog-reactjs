@@ -1,0 +1,12 @@
+h3.mb-0{
+    font-size: 20px;
+    line-height: 25px;
+    color: #000;
+}
+p.card-text{
+    font-size: 15px;
+    color: #585353;
+}
+.text-muted.date{
+    font-size: 13px;
+}

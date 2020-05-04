@@ -2,6 +2,12 @@ import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
 function findAll(){
+    return axios
+             .get("http://127.0.0.1:8000/api/posts")
+             .then(response => response.data['hydra:member'])
+}
+
+function findUserPost(){
     const token = window.localStorage.getItem("authToken");
     const {id} = jwtDecode(token);
     return axios
@@ -34,7 +40,8 @@ function deletePost(id,post){
 export default {
     find,
     newPost,
-    findAll,
+    findUserPost,
     edit,
-    deletePost
+    deletePost,
+    findAll
 }

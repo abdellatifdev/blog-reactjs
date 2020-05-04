@@ -1,17 +1,18 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
-function findAll(){
+function findAll(page,itemsPerPage){
     return axios
-             .get("http://127.0.0.1:8000/api/posts?isPulished=true")
-             .then(response => response.data['hydra:member'])
+             .get(`http://127.0.0.1:8000/api/posts?isPulished=true&itemsPerPage=${itemsPerPage}
+                    &page=${page}`)
+             .then(response => response.data)
 }
 
-function findUserPost(page){
+function findUserPost(page,title){
     const token = window.localStorage.getItem("authToken");
     const {id} = jwtDecode(token);
     return axios
-            .get(`http://127.0.0.1:8000/api/users/${id}/posts?page=${page}`)
+            .get(`http://127.0.0.1:8000/api/users/${id}/posts?page=${page}&title=${title}`)
             .then(response => response.data)
          //   .then(response => console.log(response.data["hydra:member"]))
 }

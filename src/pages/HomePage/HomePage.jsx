@@ -4,22 +4,31 @@ import PostApi from "../../api/UserPosts";
 import './HomePage.module.css';
 import CardLoader from "../../components/Loader/CardLoader";
 import { Link } from "react-router-dom";
+import Pagination from "../../components/pagination";
 const HomePage = (props) => {
   const [posts, setPost] = useState([]);
   const [loading,setLoading] = useState(true);
+  const [total,setTotal] = useState(0);  
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const fetchPosts = async () => {
     try {
-      const data = await PostApi.findAll();
-      setPost(data);
+      const data = await PostApi.findAll(currentPage,itemsPerPage);
+      setPost(data['hydra:member']);
+      setTotal(data['hydra:totalItems'])
       setLoading(false);
     } catch (error) {
       console.log(error.response);
     }
   };
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+    window.scrollTo(0, 0)
+  }, [currentPage]);
 
   return (
     <React.Fragment>
@@ -64,6 +73,12 @@ const HomePage = (props) => {
             </div>
           </div>
         ))}
+        <Pagination
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+          length={total}
+          onPageChange={handlePageChange}
+        />
           </React.Fragment>
         )}
         {loading && <CardLoader />}

@@ -11,13 +11,11 @@ const UserPosts = (props) => {
   const [posts, setPosts] = useState([]);
   const [total,setTotal] = useState(0);  
   const [currentPage, setCurrentPage] = useState(1);
-  const [search, setSearch] = useState({
-    title: "",
-    status: [true, false],
-  });
+  const [search, setSearch] = useState("");
+
   const fetchPosts = async () => {
     try {
-      const data = await PostsApi.findUserPost(currentPage);
+      const data = await PostsApi.findUserPost(currentPage,search);
       setPosts(data['hydra:member']);
       setTotal(data['hydra:totalItems']);
       setLoading(false);
@@ -26,7 +24,8 @@ const UserPosts = (props) => {
 
   useEffect(() => {
     fetchPosts();
-  }, [currentPage]);
+    window.scrollTo(0, 0)
+  }, [search,currentPage]);
 
   const itemsPerPage = 10;
   const handlePageChange = (page) => {
@@ -34,8 +33,8 @@ const UserPosts = (props) => {
   };
 
   const handleSearch = ({ currentTarget }) => {
-    const { name, value } = currentTarget;
-    setSearch({ ...search, [name]: value });
+   // const { name, value } = currentTarget;
+    setSearch(currentTarget.value);
     //   console.log({...search})
     handlePageChange(1);
   };
@@ -52,7 +51,7 @@ const UserPosts = (props) => {
   };
 
   const filteredItems = posts.filter(
-    (post) => post.title.toLowerCase().includes(search.title.toLowerCase())
+    (post) => post.title.toLowerCase().includes(search.toLowerCase())
     //       search.status == post.isPulished
   );
 
@@ -75,7 +74,7 @@ const UserPosts = (props) => {
         placeholder="Search by title"
         className="form-control"
         name="title"
-        value={search.title}
+        value={search}
         onChange={handleSearch}
       />
       {/* <input
@@ -139,14 +138,14 @@ const UserPosts = (props) => {
         )}
         {loading && <TableLoader />}
       </table>
-      {/* {itemsPerPage < filteredItems.length && ( */}
+      {itemsPerPage < total && ( 
         <Pagination
           currentPage={currentPage}
           itemsPerPage={itemsPerPage}
           length={total}
           onPageChange={handlePageChange}
         />
-      {/* )} */}
+       )}
     </div>
   );
 };

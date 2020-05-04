@@ -39,7 +39,7 @@ const HomePage = (props) => {
                 <p className="card-text mb-auto">
                   {post.content.substring(0,99) + "..."}
                 </p>
-                <Link to={"/posts/show/"+post.id} className="stretched-link">
+                <Link to={"/posts/show/"+post.slug} className="stretched-link">
                   Continue reading
                 </Link>
               </div>

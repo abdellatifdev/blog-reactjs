@@ -32,7 +32,7 @@ const App = () => {
               <Route exact path="/" component={HomePage} />
               <Route exact path="/login" component={LoginPage}/>
               <PrivateRoute exact path="/posts/:id" component={UserPost} />
-              <Route exact path="/posts/show/:id" component={ShowPost} />
+              <Route exact path="/posts/show/:slug" component={ShowPost} />
               <PrivateRoute exact path="/posts" component={UserPosts} />
               <Route component={PageNotFound} />
             </Switch>

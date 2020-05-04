@@ -11,12 +11,10 @@ const UserPost = ({ history, match }) => {
     title: "",
     content: "",
     isPulished: false,
-    slug: "",
   });
   const [error, setError] = useState({
     title: "",
     content: "",
-    slug: "",
   });
   const [notFound,setNotFound] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -109,16 +107,7 @@ const UserPost = ({ history, match }) => {
                   <div className="invalid-feedback">{error.content}</div>
                 )}
               </div>
-              <Field
-                label="Slug"
-                type="text"
-                placeholder="Slug"
-                className="form-control"
-                name="slug"
-                value={post.slug}
-                onChange={handleChange}
-                error={error.slug}
-              />
+              
               <div className="form-check">
                 <input
                   type="checkbox"
@@ -126,6 +115,7 @@ const UserPost = ({ history, match }) => {
                   name="isPulished"
                   onChange={handleChange}
                   checked={post.isPulished}
+                  id="isPublished"
                 />
                 <label className="form-check-label" htmlFor="isPublished">
                   Published

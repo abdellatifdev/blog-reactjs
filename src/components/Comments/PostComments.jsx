@@ -1,7 +1,7 @@
 import React from "react";
 import "./Comments.module.css";
 
-const PostComments = () => {
+const PostComments = ({}) => {
   return (
     <div className="row">
       <div className="col-md-12">

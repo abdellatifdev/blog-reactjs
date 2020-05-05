@@ -4,6 +4,7 @@ import "./ShowPost.module.css";
 import PostApi from "../../api/UserPosts";
 import Article from "../../components/Loader/ShowPostLoader";
 import PageNotFound from "../NotFound/PageNotFound";
+import PostComments from "../../components/Comments/PostComments";
 const ShowPost = ({ match }) => {
   const { slug } = match.params;
   const [loading, setLoading] = useState(true);
@@ -22,7 +23,7 @@ const ShowPost = ({ match }) => {
       setPost({ title, content, author, createdAt });
       setLoading(false);
     } catch (error) {
-        setNotFound(true)
+      setNotFound(true);
     }
   };
   useEffect(() => {
@@ -35,25 +36,29 @@ const ShowPost = ({ match }) => {
         <React.Fragment>
           <NavTag />
           {!loading && (
-            <div className="show-post">
-              <h1 onClick={() => console.log(post)}>{post.title}</h1>
-              <ul className="post-detail">
-                <li>
-                  <i className="fa fa-user"></i>
-                  <span className="author">
-                    {post.author.firstName + " " + post.author.lastName}
-                  </span>
-                </li>
-                <li>
-                  <i className="fa fa-calendar"></i>
-                  <span className="author">
-                    {new Date(post.createdAt).toLocaleDateString()}
-                  </span>
-                </li>
-              </ul>
-              <hr />
-              <p className="post-content">{post.content}</p>
-            </div>
+            <React.Fragment>
+              <div className="show-post">
+                <h1 onClick={() => console.log(post)}>{post.title}</h1>
+                <ul className="post-detail">
+                  <li>
+                    <i className="fa fa-user"></i>
+                    <span className="author">
+                      {post.author.firstName + " " + post.author.lastName}
+                    </span>
+                  </li>
+                  <li>
+                    <i className="fa fa-calendar"></i>
+                    <span className="author">
+                      {new Date(post.createdAt).toLocaleDateString()}
+                    </span>
+                  </li>
+                </ul>
+                <hr />
+                <p className="post-content">{post.content}</p>
+              </div>
+              <hr/>
+              <PostComments />
+            </React.Fragment>
           )}
           {loading && <Article />}
         </React.Fragment>

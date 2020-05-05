@@ -10,6 +10,7 @@ const ShowPost = ({ match }) => {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [post, setPost] = useState({
+    id:"",
     title: "",
     content: "",
     author: "",
@@ -19,8 +20,8 @@ const ShowPost = ({ match }) => {
   const fetchPost = async (slug) => {
     try {
       const data = await PostApi.findByslug(slug);
-      const { title, content, author, createdAt } = data[0];
-      setPost({ title, content, author, createdAt });
+      const { id,title, content, author, createdAt } = data[0];
+      setPost({ id,title, content, author, createdAt });
       setLoading(false);
     } catch (error) {
       setNotFound(true);
@@ -38,7 +39,7 @@ const ShowPost = ({ match }) => {
           {!loading && (
             <React.Fragment>
               <div className="show-post">
-                <h1 onClick={() => console.log(post)}>{post.title}</h1>
+                <h1>{post.title}</h1>
                 <ul className="post-detail">
                   <li>
                     <i className="fa fa-user"></i>
@@ -57,7 +58,7 @@ const ShowPost = ({ match }) => {
                 <p className="post-content">{post.content}</p>
               </div>
               <hr/>
-              <PostComments />
+              <PostComments post={post.id}/>
             </React.Fragment>
           )}
           {loading && <Article />}

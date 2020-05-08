@@ -40,8 +40,8 @@ const HomePage = (props) => {
           <div key={post.id} className="col-md-6">
             <div className="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
               <div className="col p-4 d-flex flex-column position-static">
-                <strong className="d-inline-block mb-2 text-primary">
-                  World
+                <strong className="d-inline-block mb-2 text-success">
+                  {post.postKind.name}
                 </strong>
                 <h3 className="mb-0">{post.title}</h3>
                 <div className="mb-1 text-muted date">Nov 12</div>

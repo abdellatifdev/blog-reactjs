@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import NavTag from "../../components/NavBar/NavTag";
 import "./ShowPost.module.css";
 import PostApi from "../../api/UserPosts";
 import Article from "../../components/Loader/ShowPostLoader";
 import PageNotFound from "../NotFound/PageNotFound";
 import PostComments from "../../components/Comments/PostComments";
-const ShowPost = ({ match }) => {
+
+const ShowPost = ({ history,match }) => {
   const { slug } = match.params;
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -15,13 +16,14 @@ const ShowPost = ({ match }) => {
     content: "",
     author: "",
     createdAt: "",
+    postKind: ""
   });
-
+  
   const fetchPost = async (slug) => {
     try {
       const data = await PostApi.findByslug(slug);
-      const { id,title, content, author, createdAt } = data[0];
-      setPost({ id,title, content, author, createdAt });
+      const { id,title, content, author, createdAt ,postKind} = data[0];
+      setPost({ id,title, content, author, createdAt,postKind });
       setLoading(false);
     } catch (error) {
       setNotFound(true);
@@ -53,12 +55,17 @@ const ShowPost = ({ match }) => {
                       {new Date(post.createdAt).toLocaleDateString()}
                     </span>
                   </li>
+                  <li>
+                      <span className="badge badge-pill badge-success">
+                        {post.postKind.name}
+                      </span>
+                  </li>
                 </ul>
                 <hr />
                 <p className="post-content">{post.content}</p>
               </div>
               <hr/>
-              <PostComments post={post.id}/>
+              <PostComments post={post.id} history={history}/>
             </React.Fragment>
           )}
           {loading && <Article />}

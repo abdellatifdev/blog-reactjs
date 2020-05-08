@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { format } from "timeago.js";
 import "./Comments.module.css";
 import CommentApi from "../../api/PostComments";
+import AuthContext from '../../contexts/AuthContext';
 
-const PostComments = ({ post }) => {
+const PostComments = ({ history,post }) => {
   const [comments, setComments] = useState([]);
-  const [error,setError] = useState("")
+  const [error,setError] = useState("");
+  const {isAuthenticated} = useContext(AuthContext);
   const [comment, setComment] = useState({
     content: "",
-    post: "/api/posts/199",
+    post:"",
   });
   const fetchComments = async () => {
     try {
@@ -19,16 +21,25 @@ const PostComments = ({ post }) => {
     }
   };
 
+  const handleChange = ({ currentTarget }) => {
+    const { name, value } = currentTarget;
+    setComment({ ...comment, [name]: value });
+  };
+
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      console;
-      await CommentApi.newComment(comment);
+      await CommentApi.newComment({
+        ...comment,
+        post: `/api/posts/${post}`
+      });
       fetchComments();
       setError("");
       comment.content = "";
       document.getElementById("post-comment").reset();
     } catch ({response}) {
+      console.log(response)
       const {violations} = response.data;
       if(violations){
         setError("This value should not be blank.");
@@ -36,14 +47,18 @@ const PostComments = ({ post }) => {
     }
   };
 
-  const handleChange = ({ currentTarget }) => {
-    const { name, value } = currentTarget;
-    setComment({ ...comment, [name]: value });
-  };
 
   useEffect(() => {
     fetchComments();
   }, []);
+
+  const checkIfIsAuthenticated = () =>{
+     if(!isAuthenticated) {
+       if(window.confirm("Create an account to write a response.")){
+        history.replace("/login");
+       }
+      }
+  }
 
   return (
     <div className="row">
@@ -60,6 +75,7 @@ const PostComments = ({ post }) => {
                     placeholder="write a comment..."
                     rows="3"
                     onChange={handleChange}
+                    onClick={checkIfIsAuthenticated}
                   ></textarea>
                   {error && <div className="invalid-feedback">{error}</div>}
                 </div>

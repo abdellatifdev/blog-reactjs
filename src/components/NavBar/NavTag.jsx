@@ -1,45 +1,29 @@
-import React from 'react';
-
+import React, { useState, useEffect } from 'react';
+import PostKindApi from '../../api/PostKindApi';
 const NavTag = () => {
+    const [kinds,setKinds] = useState([]);
+
+    const fetchPostKinds = async () => {
+        try {
+          const data = await PostKindApi.findAll();
+          setKinds(data);
+        } catch (error) {
+          console.log(error.response);
+        }
+      };
+
+      useEffect(() => {
+        fetchPostKinds();
+      }, []);
+
     return ( 
         <div className="nav-scroller py-1 mb-2">
             <nav className="nav d-flex justify-content-between">
-            <a className="p-2 text-muted" href="#">
-                World
+            {kinds.map((kind) => (
+                <a className="p-2 text-muted" key={kind.id} href="#">
+                {kind.name}
             </a>
-            <a className="p-2 text-muted" href="#">
-                U.S.
-            </a>
-            <a className="p-2 text-muted" href="#">
-                Technology
-            </a>
-            <a className="p-2 text-muted" href="#">
-                Design
-            </a>
-            <a className="p-2 text-muted" href="#">
-                Culture
-            </a>
-            <a className="p-2 text-muted" href="#">
-                Business
-            </a>
-            <a className="p-2 text-muted" href="#">
-                Politics
-            </a>
-            <a className="p-2 text-muted" href="#">
-                Opinion
-            </a>
-            <a className="p-2 text-muted" href="#">
-                Science
-            </a>
-            <a className="p-2 text-muted" href="#">
-                Health
-            </a>
-            <a className="p-2 text-muted" href="#">
-                Style
-            </a>
-            <a className="p-2 text-muted" href="#">
-                Travel
-            </a>
+            ))}
         </nav>
       </div>
      );

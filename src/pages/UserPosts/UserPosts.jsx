@@ -50,16 +50,16 @@ const UserPosts = (props) => {
     }
   };
 
-  const filteredItems = posts.filter(
-    (post) => post.title.toLowerCase().includes(search.toLowerCase())
-    //       search.status == post.isPulished
-  );
+  // const filteredItems = posts.filter(
+  //   (post) => post.title.toLowerCase().includes(search.toLowerCase())
+  //   //       search.status == post.isPulished
+  // );
 
-  const paginatedItems = Pagination.getData(
-    currentPage,
-    filteredItems,
-    itemsPerPage
-  );
+  // const paginatedItems = Pagination.getData(
+  //   currentPage,
+  //   filteredItems,
+  //   itemsPerPage
+  // );
   return (
     <div className="posts-list">
       <div className="mb-3 d-flex justify-content-between align-items-center">

@@ -5,6 +5,7 @@ import PostApi from "../../api/UserPosts";
 import Article from "../../components/Loader/ShowPostLoader";
 import PageNotFound from "../NotFound/PageNotFound";
 import PostComments from "../../components/Comments/PostComments";
+import { Link } from "react-router-dom";
 
 const ShowPost = ({ history,match }) => {
   const { slug } = match.params;
@@ -56,9 +57,11 @@ const ShowPost = ({ history,match }) => {
                     </span>
                   </li>
                   <li>
-                      <span className="badge badge-pill badge-success">
-                        {post.postKind.name}
-                      </span>
+                      <Link to={`/posts/category/${post.postKind.name}`}>
+                        <span className="badge badge-pill badge-success">
+                          {post.postKind.name}
+                        </span>
+                      </Link> 
                   </li>
                 </ul>
                 <hr />

@@ -18,7 +18,6 @@ Auth.setup();
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(Auth.isAuthenticated());
-
   const NavBarWithRouter = withRouter(NavBar);
   return (
     <AuthContext.Provider value={{isAuthenticated,setIsAuthenticated}}>
@@ -28,7 +27,7 @@ const App = () => {
             <NavBarWithRouter />
             <Switch>
               <Route exact path="/" component={HomePage} />
-              <Route path="/posts/category/:category" render={({match}) => <HomePage category={match.params} />}/>
+              <Route path="/posts/category/:category" render={({match}) => <HomePage match={match} />}/>
               <Route exact path="/login" component={LoginPage}/>
               <PrivateRoute exact path="/my-posts/:id" component={UserPost} />
               <Route exact path="/posts/show/:slug" component={ShowPost} />

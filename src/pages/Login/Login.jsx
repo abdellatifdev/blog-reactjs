@@ -25,7 +25,7 @@ const LoginPage = ({history}) => {
             await Auth.authenticate(credentials);
             setError("");
             setIsAuthenticated(true);
-            history.replace('/posts');
+            history.replace('/my-posts');
         }catch(error){
             setError("invalid authentication !");
         }

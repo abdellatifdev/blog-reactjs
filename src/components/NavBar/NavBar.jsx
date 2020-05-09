@@ -19,7 +19,7 @@ const NavBar = ({history }) => {
       <div className="row flex-nowrap justify-content-between align-items-center">
         <div className="col-4 pt-1">
           {(isAuthenticated && (
-            <NavLink className="text-muted" to="/posts">
+            <NavLink className="text-muted" to="/my-posts">
               My posts
           </NavLink>
           ))}

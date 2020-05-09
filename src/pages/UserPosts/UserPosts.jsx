@@ -118,7 +118,7 @@ const UserPosts = (props) => {
               </td>
               <td>
                 <Link
-                  to={"/posts/" + post.id}
+                  to={"/my-posts/" + post.id}
                   className="btn btn-warning btn-sm"
                 >
                   <i className="fa fa-edit"></i>

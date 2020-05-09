@@ -1,10 +1,16 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
-function findAll(page,itemsPerPage){
+function findAll(page,itemsPerPage,kind){
+    let qeury = `http://127.0.0.1:8000/api/posts?isPulished=true&itemsPerPage=${itemsPerPage}
+                 &page=${page}`;
+    
+    if(kind){
+        qeury = qeury + `&postKind.name=${kind}`
+    }             
+
     return axios
-             .get(`http://127.0.0.1:8000/api/posts?isPulished=true&itemsPerPage=${itemsPerPage}
-                    &page=${page}`)
+             .get(qeury)
              .then(response => response.data)
 }
 

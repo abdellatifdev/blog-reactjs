@@ -17,11 +17,9 @@ import ShowPost from './pages/PublicPost/ShowPost';
 Auth.setup();
 
 const App = () => {
-
   const [isAuthenticated, setIsAuthenticated] = useState(Auth.isAuthenticated());
 
   const NavBarWithRouter = withRouter(NavBar);
-
   return (
     <AuthContext.Provider value={{isAuthenticated,setIsAuthenticated}}>
       <BrowserRouter>
@@ -30,10 +28,11 @@ const App = () => {
             <NavBarWithRouter />
             <Switch>
               <Route exact path="/" component={HomePage} />
+              <Route path="/posts/category/:category" render={({match}) => <HomePage category={match.params} />}/>
               <Route exact path="/login" component={LoginPage}/>
-              <PrivateRoute exact path="/posts/:id" component={UserPost} />
+              <PrivateRoute exact path="/my-posts/:id" component={UserPost} />
               <Route exact path="/posts/show/:slug" component={ShowPost} />
-              <PrivateRoute exact path="/posts" component={UserPosts} />
+              <PrivateRoute exact path="/my-posts" component={UserPosts} />
               <Route component={PageNotFound} />
             </Switch>
           </div>

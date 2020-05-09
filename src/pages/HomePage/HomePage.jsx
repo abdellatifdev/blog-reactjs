@@ -5,7 +5,8 @@ import './HomePage.module.css';
 import CardLoader from "../../components/Loader/CardLoader";
 import { Link } from "react-router-dom";
 import Pagination from "../../components/pagination";
-const HomePage = (props) => {
+const HomePage = ({match}) => {
+  //console.log(match.params)
   const [posts, setPost] = useState([]);
   const [loading,setLoading] = useState(true);
   const [total,setTotal] = useState(0);  
@@ -29,6 +30,7 @@ const HomePage = (props) => {
     fetchPosts();
     window.scrollTo(0, 0)
   }, [currentPage]);
+
 
   return (
     <React.Fragment>
@@ -81,9 +83,20 @@ const HomePage = (props) => {
         />
           </React.Fragment>
         )}
-        {loading && <CardLoader />}
+        </div>
+        {loading && 
+          <React.Fragment>
+              <div className="row">
+                <div className="col-md-6">
+                    <CardLoader />
+                </div>
+                <div className="col-md-6">
+                    <CardLoader />
+                </div>
+              </div>
+          </React.Fragment>}
         
-      </div>
+      
     </React.Fragment>
   );
 };

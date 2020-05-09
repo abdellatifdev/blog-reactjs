@@ -75,7 +75,7 @@ const UserPost = ({ history, match }) => {
         await ApiPost.edit(id, post);
       }
 
-      history.replace("/posts");
+      history.replace("/my-posts");
     } catch ({ response }) {
       const { violations } = response.data;
       if (violations) {

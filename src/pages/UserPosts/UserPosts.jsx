@@ -64,7 +64,7 @@ const UserPosts = (props) => {
     <div className="posts-list">
       <div className="mb-3 d-flex justify-content-between align-items-center">
         <h1>My posts list</h1>
-        <Link className="btn btn-primary" to="/posts/new">
+        <Link className="btn btn-primary" to="/my-posts/new">
           New post
         </Link>
       </div>

@@ -17,3 +17,12 @@
 .media-list{
     padding-left: 0;
 }
+.delete-comment{
+    color: #0864c7;
+    background: none;
+    border: none;
+    font-size: 13px;
+}
+.delete-comment:hover{
+    text-decoration: underline;
+}

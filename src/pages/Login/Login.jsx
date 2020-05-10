@@ -4,7 +4,6 @@ import Auth from '../../api/Auth';
 import AuthContext from '../../contexts/AuthContext';
 import Field from '../../components/form/Field';
 const LoginPage = ({history}) => {
-
     const {setIsAuthenticated} = useContext(AuthContext);
     
     const [credentials,setCredentials] = useState({

@@ -3,8 +3,10 @@ import { format } from "timeago.js";
 import "./Comments.module.css";
 import CommentApi from "../../api/PostComments";
 import AuthContext from '../../contexts/AuthContext';
+import jwtDecode from "jwt-decode";
 
 const PostComments = ({ history,post }) => {
+  const { id } = jwtDecode(window.localStorage.getItem("authToken"));
   const [comments, setComments] = useState([]);
   const [error,setError] = useState("");
   const {isAuthenticated} = useContext(AuthContext);
@@ -60,6 +62,17 @@ const PostComments = ({ history,post }) => {
       }
   }
 
+  const handleDelete = async (id) => {
+    const originalComments = [comments];
+    setComments(comments.filter((comment) => comment.id != id))
+    try{
+        await CommentApi.deleteComment(id)
+    }catch({response}){
+        setComments(originalComments);
+    }
+    
+  }
+
   return (
     <div className="row">
       <div className="col-md-12">
@@ -106,6 +119,13 @@ const PostComments = ({ history,post }) => {
                           {comment.author.firstName +' '+comment.author.lastName}
                       </strong>
                       <p>{comment.content}</p>
+                      {id === comment.author.id && 
+                      
+                      <button className="delete-comment" onClick={() => handleDelete(comment.id)}>
+                          Delete
+                      </button>
+                      }
+                      
                     </div>
                   </li>
                 ))}

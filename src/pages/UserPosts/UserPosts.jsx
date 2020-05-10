@@ -97,6 +97,7 @@ const UserPosts = (props) => {
             <th scope="col">Title</th>
             {/* <th scope="col">Created At</th>
             <th scope="col">Updated At</th> */}
+            <th scope="col">Category</th>
             <th scope="col">Published</th>
             <th scope="col">Action</th>
           </tr>
@@ -106,6 +107,7 @@ const UserPosts = (props) => {
           {posts.map((post) => (
             <tr key={post.id}>
               <td>{post.title}</td>
+              <td>{post.postKind.name}</td>
               {/* <td>{new Date(post.createdAt).toLocaleDateString()}</td>
               <td>
                 {post.updatedAt &&

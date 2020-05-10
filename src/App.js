@@ -13,6 +13,7 @@ import UserPosts from './pages/UserPosts/UserPosts';
 import UserPost from './pages/UserPosts/UserPost';
 import PageNotFound from './pages/NotFound/PageNotFound';
 import ShowPost from './pages/PublicPost/ShowPost';
+import Register from './pages/Register/Register';
 
 Auth.setup();
 
@@ -29,6 +30,7 @@ const App = () => {
               <Route exact path="/" component={HomePage} />
               <Route path="/posts/category/:category" render={({match}) => <HomePage match={match} />}/>
               <Route exact path="/login" component={LoginPage}/>
+              <Route exact path="/register" component={Register}/>
               <PrivateRoute exact path="/my-posts/:id" component={UserPost} />
               <Route exact path="/posts/show/:slug" component={ShowPost} />
               <PrivateRoute exact path="/my-posts" component={UserPosts} />

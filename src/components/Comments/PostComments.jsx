@@ -102,7 +102,9 @@ const PostComments = ({ history,post }) => {
                           {format(comment.createdAt, "my-locale")}
                         </small>
                       </span>
-                      <strong className="text-success">@MartinoMont</strong>
+                      <strong className="text-success">
+                          {comment.author.firstName +' '+comment.author.lastName}
+                      </strong>
                       <p>{comment.content}</p>
                     </div>
                   </li>

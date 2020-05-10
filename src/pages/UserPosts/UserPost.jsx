@@ -35,12 +35,13 @@ const UserPost = ({ history, match }) => {
   const fetchPost = async (idUser) => {
     try {
       const data = await ApiPost.find(idUser);
+      
       const { id } = jwtDecode(window.localStorage.getItem("authToken"));
       if (data["author"]["id"] !== id) {
         setNotFound(true);
       } else {
-        const { title, content, isPulished, slug } = data;
-        setPost({ title, content, isPulished, slug });
+        const { title, content, isPulished, slug,postKind} = data;
+        setPost({ title, content, isPulished, slug,postKind: postKind.id });
       }
     } catch (error) {
       setNotFound(true);
@@ -69,10 +70,13 @@ const UserPost = ({ history, match }) => {
       if (!editing) {
         await ApiPost.newPost({
           ...post, 
-          postKind: `/api/post_kinds/9`
+          postKind: `/api/post_kinds/${post.postKind}`
         });
       } else {
-        await ApiPost.edit(id, post);
+        await ApiPost.edit(id, {
+          ...post,
+          postKind: `/api/post_kinds/${post.postKind}`
+        });
       }
 
       history.replace("/my-posts");
@@ -83,7 +87,6 @@ const UserPost = ({ history, match }) => {
         violations.map(({ propertyPath, message }) => {
           apiErrors[propertyPath] = message;
         });
-        console.log(apiErrors)
         setError(apiErrors);
       }
     }
@@ -132,11 +135,10 @@ const UserPost = ({ history, match }) => {
               <label>Post kind</label>
               <select 
                 className={"form-control " + (error.postKind && "is-invalid")}
-                value={post.kind}
+                value={post.postKind}
                 name="postKind"
                 onChange={handleChange}
                 >
-                <option>Choose an option</option>
                 {kinds.map((kind) => (
                     <option key={kind.id} value={kind.id}>{kind.name}</option>
                 ))}               

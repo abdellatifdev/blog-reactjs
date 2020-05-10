@@ -31,6 +31,11 @@ function setup(){
     }
 }
 
+function newUser(user){
+    return axios
+            .post("http://127.0.0.1:8000/api/users",user);
+}
+
 function isAuthenticated(){
     const token = window.localStorage.getItem("authToken");
     if(token){
@@ -47,5 +52,6 @@ export default {
     authenticate,
     logout,
     setup,
-    isAuthenticated
+    isAuthenticated,
+    newUser
 }

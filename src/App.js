@@ -14,6 +14,7 @@ import UserPost from './pages/UserPosts/UserPost';
 import PageNotFound from './pages/NotFound/PageNotFound';
 import ShowPost from './pages/PublicPost/ShowPost';
 import Register from './pages/Register/Register';
+import Profile from './pages/Profile/Profile';
 
 Auth.setup();
 
@@ -34,6 +35,7 @@ const App = () => {
               <PrivateRoute exact path="/my-posts/:id" component={UserPost} />
               <Route exact path="/posts/show/:slug" component={ShowPost} />
               <PrivateRoute exact path="/my-posts" component={UserPosts} />
+              <Route exact path="/profile" component={Profile} />
               <Route component={PageNotFound} />
             </Switch>
           </div>

@@ -10,6 +10,14 @@ const Register = ({history}) => {
         password:"",
         birthday:""
     });
+    const [error,setError] = useState({
+        firstName:"",
+        lastName:"",
+        email:"",
+        username:"",
+        password:"",
+        birthday:""
+    });
 
     const handleChange = ({currentTarget}) => {
         const {name,value} = currentTarget;
@@ -21,31 +29,39 @@ const Register = ({history}) => {
         try {
             await UserApi.newUser(user);
             history.replace('/login');
-        } catch ({response}) {
-            console.log(response);
+        } catch ({ response }) {
+            const { violations } = response.data;
+            if (violations) {
+              const apiErrors = {};
+              violations.map(({ propertyPath, message }) => {
+                apiErrors[propertyPath] = message;
+              });
+              setError(apiErrors);
         }
     }
+}
 
     return ( 
         <div className="login-form">
             <h2>Register</h2>
             <form onSubmit={handleSubmit}>
-                <Field label="First name"  name="firstName" 
+                <Field label="First name" error={error.firstName} name="firstName" 
                        onChange={handleChange} value={user.firstName}/>
 
-                <Field label="Last name" value={user.lastName} name="lastName" 
+                <Field label="Last name" value={user.lastName} error={error.lastName}
+                    name="lastName" 
                        onChange={handleChange}/>
 
-                <Field label="Email" type="email" value={user.email} name="email" 
+                <Field label="Email" type="email" error={error.email} value={user.email} name="email" 
                        onChange={handleChange}/>   
 
-                <Field label="Username" value={user.username} name="username" 
+                <Field label="Username" error={error.username} value={user.username} name="username" 
                        onChange={handleChange}/>          
 
-                <Field label="Password" type="password" value={user.password} name="password" 
+                <Field label="Password" type="password" error={error.password} value={user.password} name="password" 
                        onChange={handleChange}/> 
                 
-                <Field label="Birthday" type="date" value={user.birthday} name="birthday" 
+                <Field label="Birthday" type="date"  value={user.birthday} name="birthday" 
                        onChange={handleChange}/> 
 
                 <button type="submit" className="btn btn-primary">Submit</button>

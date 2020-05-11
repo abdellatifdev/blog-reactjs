@@ -132,7 +132,7 @@ const UserPost = ({ history, match }) => {
               )}
             </div>
             <div className="form-group">
-              <label>Post kind</label>
+              <label>Category</label>
               <select 
                 className={"form-control " + (error.postKind && "is-invalid")}
                 value={post.postKind}

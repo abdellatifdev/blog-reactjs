@@ -2,17 +2,17 @@ import React, { useState, useEffect, useContext } from "react";
 import { format } from "timeago.js";
 import "./Comments.module.css";
 import CommentApi from "../../api/PostComments";
-import AuthContext from '../../contexts/AuthContext';
+import AuthContext from "../../contexts/AuthContext";
 import jwtDecode from "jwt-decode";
 
-const PostComments = ({ history,post }) => {
-  const { id } = jwtDecode(window.localStorage.getItem("authToken"));
+const PostComments = ({ history, post }) => {
   const [comments, setComments] = useState([]);
-  const [error,setError] = useState("");
-  const {isAuthenticated} = useContext(AuthContext);
+  const [error, setError] = useState("");
+  const { isAuthenticated } = useContext(AuthContext);
+  const [editing, setEditing] = useState(false);
   const [comment, setComment] = useState({
     content: "",
-    post:"",
+    post: "",
   });
   const fetchComments = async () => {
     try {
@@ -28,62 +28,86 @@ const PostComments = ({ history,post }) => {
     setComment({ ...comment, [name]: value });
   };
 
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await CommentApi.newComment({
-        ...comment,
-        post: `/api/posts/${post}`
-      });
+      if (!editing) {
+        await CommentApi.newComment({
+          ...comment,
+          post: `/api/posts/${post}`,
+        });
+      } else {
+        await CommentApi.edit(comment.id, { ...comment });
+      }
       fetchComments();
       setError("");
-      comment.content = "";
-      document.getElementById("post-comment").reset();
-    } catch ({response}) {
-      console.log(response)
-      const {violations} = response.data;
-      if(violations){
+      setComment({ id: undefined, post: "", content: "" });
+      setEditing(false);
+    } catch ({ response }) {
+      console.log(response);
+      const { violations } = response.data;
+      if (violations) {
         setError("This value should not be blank.");
       }
     }
   };
 
+  const checkIfIsAuthenticated = () => {
+    if (!isAuthenticated) {
+      if (window.confirm("Create an account to write a response.")) {
+        history.replace("/login");
+      }
+    }
+  };
+
+  const handleEdit = async (idComment) => {
+    try {
+      const data = await CommentApi.find(idComment);
+      const { id, content, post } = data;
+      setComment({ id, content, post });
+      setEditing(true);
+      document.getElementById("comment-wrapper").scrollIntoView();
+    } catch ({ response }) {
+      console.log(response);
+    }
+  };
+
+  const checkIfCommentAuthor = (comment) => {
+    if (isAuthenticated) {
+      const { id } = jwtDecode(window.localStorage.getItem("authToken"));
+      if (id === comment.author.id) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const handleDelete = async (id) => {
+    const originalComments = [comments];
+    setComments(comments.filter((comment) => comment.id != id));
+    try {
+      await CommentApi.deleteComment(id);
+    } catch ({ response }) {
+      setComments(originalComments);
+    }
+  };
 
   useEffect(() => {
     fetchComments();
   }, []);
 
-  const checkIfIsAuthenticated = () =>{
-     if(!isAuthenticated) {
-       if(window.confirm("Create an account to write a response.")){
-        history.replace("/login");
-       }
-      }
-  }
-
-  const handleDelete = async (id) => {
-    const originalComments = [comments];
-    setComments(comments.filter((comment) => comment.id != id))
-    try{
-        await CommentApi.deleteComment(id)
-    }catch({response}){
-        setComments(originalComments);
-    }
-    
-  }
-
   return (
     <div className="row">
       <div className="col-md-12">
-        <div className="comment-wrapper">
+        <div className="comment-wrapper" id="comment-wrapper">
           <div className="panel panel-info">
             <div className="panel-body">
               <form onSubmit={handleSubmit} id="post-comment">
                 <div className="form-group">
                   <textarea
+                    id="content"
                     name="content"
-                    value={comment.value}
+                    value={comment.content}
                     className={"form-control" + (error && " is-invalid")}
                     placeholder="write a comment..."
                     rows="3"
@@ -93,7 +117,11 @@ const PostComments = ({ history,post }) => {
                   {error && <div className="invalid-feedback">{error}</div>}
                 </div>
                 <br />
-                <button type="submit" className="btn btn-info pull-right">
+                <button
+                  type="submit"
+                  className="btn btn-info pull-right"
+                  disabled={!isAuthenticated && "disabled"}
+                >
                   Post
                 </button>
               </form>
@@ -116,16 +144,30 @@ const PostComments = ({ history,post }) => {
                         </small>
                       </span>
                       <strong className="text-success">
-                          {comment.author.firstName +' '+comment.author.lastName}
+                        {comment.author.firstName +
+                          " " +
+                          comment.author.lastName}
                       </strong>
                       <p>{comment.content}</p>
-                      {id === comment.author.id && 
-                      
-                      <button className="delete-comment" onClick={() => handleDelete(comment.id)}>
-                          Delete
-                      </button>
-                      }
-                      
+                      {checkIfCommentAuthor(comment) && (
+                        <React.Fragment>
+                          <button
+                            className="delete-comment"
+                            onClick={() => handleEdit(comment.id)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="delete-comment"
+                            onClick={() =>
+                              window.confirm("Are you sure ?") &&
+                              handleDelete(comment.id)
+                            }
+                          >
+                            Delete
+                          </button>
+                        </React.Fragment>
+                      )}
                     </div>
                   </li>
                 ))}

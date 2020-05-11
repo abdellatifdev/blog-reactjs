@@ -19,10 +19,18 @@ function deleteComment(id){
 function find(id){
     return axios
             .get(`http://127.0.0.1:8000/api/comments/${id}`)
+            .then(response => response.data)
+}
+
+function edit(id,comment){
+    return axios
+            .put(`http://127.0.0.1:8000/api/comments/${id}`,comment)
+            .then(response => response.data)
 }
 export default {
     getComments,
     newComment,
     deleteComment,
-    find
+    find,
+    edit
 }
